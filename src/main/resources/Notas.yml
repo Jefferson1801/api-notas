@@ -1,0 +1,176 @@
+openapi: 3.0.1
+info:
+  title: Notas API
+  description: API para gestionar notas
+  version: "1.0.0"
+paths:
+  /notas/usuario:
+    get:
+      summary: Obtener notas por usuario
+      description: Obtiene todas las notas de un usuario específico o de todos los usuarios si no se proporciona un `idUsuario`.
+      parameters:
+        - name: idUsuario
+          in: query
+          description: ID del usuario para filtrar las notas
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de notas obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NotaResponseDto'
+        "500":
+          description: Error del servidor
+  /notas/{idNota}:
+    get:
+      summary: Obtener nota por ID
+      description: Obtiene una nota específica por su ID.
+      parameters:
+        - name: idNota
+          in: path
+          description: ID de la nota
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Nota obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotaResponseDto'
+        "404":
+          description: Nota no encontrada
+        "500":
+          description: Error del servidor
+    put:
+      summary: Actualizar una nota
+      description: Actualiza una nota existente.
+      parameters:
+        - name: idNota
+          in: path
+          description: ID de la nota a actualizar
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotaDto'
+      responses:
+        "200":
+          description: Nota actualizada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotaResponseDto'
+        "404":
+          description: Nota no encontrada
+        "500":
+          description: Error del servidor
+    delete:
+      summary: Eliminar una nota
+      description: Elimina una nota específica por su ID.
+      parameters:
+        - name: idNota
+          in: path
+          description: ID de la nota a eliminar
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Nota eliminada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+        "500":
+          description: Error del servidor
+  /notas:
+    post:
+      summary: Crear nueva nota
+      description: Crea una nueva nota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotaDto'
+      responses:
+        "201":
+          description: Nota creada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/NotaResponseDto'
+        "500":
+          description: Error del servidor
+components:
+  schemas:
+    NotaDto:
+      type: object
+      properties:
+        titulo:
+          type: string
+        contenido:
+          type: string
+        idUsuario:
+          type: integer
+    NotaResponseDto:
+      type: object
+      properties:
+        idNota:
+          type: integer
+        titulo:
+          type: string
+        contenido:
+          type: string
+        fechaCreacion:
+          type: string
+          format: date
+        fechaActualizacion:
+          type: string
+          format: date
+        idUsuario:
+          type: integer
